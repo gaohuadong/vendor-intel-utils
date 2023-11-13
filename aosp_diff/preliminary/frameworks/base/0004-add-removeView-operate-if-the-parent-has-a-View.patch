@@ -1,0 +1,42 @@
+From 97e57edc6300900ef0fcf478c7750777644da4f0 Mon Sep 17 00:00:00 2001
+From: "Gao, HuadongX" <huadongx.gao@intel.com>
+Date: Mon, 13 Nov 2023 09:56:31 +0000
+Subject: [PATCH] add removeView operate if the parent has a View.
+
+java.lang.IllegalStateException: The specified child already
+has a parent. You must call removeView() on the child's parent
+first.
+
+Tracked-On: OAM-113171
+Signed-off-by: Gao, HuadongX <huadongx.gao@intel.com>
+---
+ core/java/android/widget/PopupWindow.java | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/core/java/android/widget/PopupWindow.java b/core/java/android/widget/PopupWindow.java
+index e7e148abb95a..c36e7bd40dfe 100644
+--- a/core/java/android/widget/PopupWindow.java
++++ b/core/java/android/widget/PopupWindow.java
+@@ -62,6 +62,8 @@ import com.android.internal.R;
+ import java.lang.ref.WeakReference;
+ import java.util.List;
+ 
++import android.util.Log;
++
+ /**
+  * <p>
+  * This class represents a popup window that can be used to display an
+@@ -1526,6 +1528,10 @@ public class PopupWindow {
+         final PopupBackgroundView backgroundView = new PopupBackgroundView(mContext);
+         final PopupBackgroundView.LayoutParams listParams = new PopupBackgroundView.LayoutParams(
+                 MATCH_PARENT, height);
++	if(contentView.getParent() != null) {
++	   ((ViewGroup)contentView.getParent()).removeView(contentView);
++	   Log.e("ghd", "ghd: (contentView.getParent()).removeView(contentView)");
++	}
+         backgroundView.addView(contentView, listParams);
+ 
+         return backgroundView;
+-- 
+2.34.1
+
